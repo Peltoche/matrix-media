@@ -46,7 +46,7 @@ This connector uses [cozy-konnector-libs](https://github.com/cozy/cozy-konnector
 
 ### Maintainer
 
-The lead maintainer for this konnector is __YOUR_NAME__
+The lead maintainer for this konnector is __Peltoche__
 
 
 ### Get in touch
@@ -63,7 +63,7 @@ You can reach the Cozy Community by:
 License
 -------
 
-__YOUR_KONNECTOR_NAME__ is developed by __YOUR_NAME__ and distributed under the [AGPL v3 license][agpl-3.0].
+__Matrix__ Media is developed by __Peltoche__ and distributed under the [AGPL v3 license][agpl-3.0].
 
 [cozy]: https://cozy.io "Cozy Cloud"
 [agpl-3.0]: https://www.gnu.org/licenses/agpl-3.0.html
