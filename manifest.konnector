@@ -4,7 +4,7 @@
   "type": "konnector",
   "language": "node",
   "icon": "icon.png",
-  "slug": "template",
+  "slug": "matrix",
   "source": "git@github.com:Peltoche/matrix-medias.git",
   "editor": "Peltoche",
   "vendor_link": "https://matrix.org/",
