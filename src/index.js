@@ -27,7 +27,9 @@ async function start(fields) {
     roomID = fields.roomID
   } else {
     log('info', 'Invalid room id')
-    throw new Error("invalid room format, should start by '!' for an id or '#' for an alias")
+    throw new Error(
+      "invalid room format, should start by '!' for an id or '#' for an alias"
+    )
   }
 
   roomID = encodeURIComponent(roomID)
@@ -38,11 +40,12 @@ async function start(fields) {
   // latest messages and not the
   const accountData = await this.getAccountData()
   if (!accountData || !accountData[roomID]) {
-    await this.saveAccountData({ [roomID]: { direction: 'b' }})
+    await this.saveAccountData({ [roomID]: { direction: 'b' } })
   }
 
   const url = `_matrix/client/r0/rooms/${roomID}/messages?limit=${batchSize}`
 
+  /* eslint no-constant-condition: ["error", { "checkLoops": false }]*/
   while (true) {
     let data = await this.getAccountData()[roomID]
 
@@ -59,15 +62,17 @@ async function start(fields) {
       headers: { Authorization: `Bearer ${fields.accessToken}` }
     })
 
-    msgs = res.data.chunk
+    let msgs = res.data.chunk
 
-    if (!data.pivot || !data.roomName)  {
+    if (!data.pivot || !data.roomName) {
       // This is the first time we run the job and we have started to read
-      // all the history backward. 
+      // all the history backward.
       // We save the data start because once we will have read all the history
       // backward we will start to read the history forward, starting at this event.
       data.pivot = res.data.start
-      data.roomName = res.data.chunk.find(msg => msg.type === 'm.room.name').content.name
+      data.roomName = res.data.chunk.find(
+        msg => msg.type === 'm.room.name'
+      ).content.name
     }
 
     const files = processMessages(fields, msgs)
@@ -97,63 +102,60 @@ async function start(fields) {
       break
     }
 
-    await this.saveAccountData({ [roomID]: data})
+    await this.saveAccountData({ [roomID]: data })
   }
 }
 
 function processMessages(fields, messages) {
-
   return (
     messages
-    // Keep only the selected media
-    .filter(
-      msg =>
-      (fields.saveVideos && msg.content.msgtype === 'm.video') ||
-      (fields.savePictures && msg.content.msgtype === 'm.image') ||
-      (fields.saveOther && msg.content.msgtype === 'm.file')
-    )
-    .map(msg => {
-      log('info', msg)
-      // Fetch the mxc looking like `mxc://{instanceName}/{some-id}`
-      const mxcUrl = msg.content.url
+      // Keep only the selected media
+      .filter(
+        msg =>
+          (fields.saveVideos && msg.content.msgtype === 'm.video') ||
+          (fields.savePictures && msg.content.msgtype === 'm.image') ||
+          (fields.saveOther && msg.content.msgtype === 'm.file')
+      )
+      .map(msg => {
+        log('info', msg)
+        // Fetch the mxc looking like `mxc://{instanceName}/{some-id}`
+        const mxcUrl = msg.content.url
 
-      // We want to convert this mxc url into an http one looking like:
-      // `https://{instanceURL}/_matrix/media/r0/download/{instanceName}/{some-id}`
-      const parts = mxcUrl.split('/')
+        // We want to convert this mxc url into an http one looking like:
+        // `https://{instanceURL}/_matrix/media/r0/download/{instanceName}/{some-id}`
+        const parts = mxcUrl.split('/')
 
-      let attrs
-      switch (msg.content.msgtype) {
-        case 'm.video':
-          attrs = { 
-            class: 'video',
-            metadata: {
-              width: msg.content.info.w,
-              height: msg.content.info.h
+        let attrs
+        switch (msg.content.msgtype) {
+          case 'm.video':
+            attrs = {
+              class: 'video',
+              metadata: {
+                width: msg.content.info.w,
+                height: msg.content.info.h
+              }
             }
-          }
-          break
-        case 'm.image':
-          attrs = { 
-            class: 'image',
-            metadata: {
-              width: msg.content.info.w,
-              height: msg.content.info.h
+            break
+          case 'm.image':
+            attrs = {
+              class: 'image',
+              metadata: {
+                width: msg.content.info.w,
+                height: msg.content.info.h
+              }
             }
-          }
-          break
-        default:
-          attrs = { class: 'document' }
-          fileClass = 'document'
-      }
+            break
+          default:
+            attrs = { class: 'document' }
+        }
 
-
-      return {
-        fileIdAttributes: ['filename'],
-        fileurl: `${fields.instanceURL}/_matrix/media/r0/download/${parts[2]}/${parts[3]}`,
-        filename: normalizeFilename(msg.content.body),
-        contentType: msg.content.info.mimetype,
-        fileAttributes: attrs
-      }
-    })
+        return {
+          fileIdAttributes: ['filename'],
+          fileurl: `${fields.instanceURL}/_matrix/media/r0/download/${parts[2]}/${parts[3]}`,
+          filename: normalizeFilename(msg.content.body),
+          contentType: msg.content.info.mimetype,
+          fileAttributes: attrs
+        }
+      })
   )
 }
