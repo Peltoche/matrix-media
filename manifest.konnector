@@ -1,88 +1,137 @@
 {
   "version": "1.0.0",
-  "name": "Matrix Medias",
-  "type": "konnector",
-  "language": "node",
-  "icon": "icon.png",
-  "slug": "matrix",
-  "source": "git@github.com:Peltoche/matrix-medias.git",
-  "editor": "Peltoche",
-  "vendor_link": "https://matrix.org/",
-  "frequency": "daily",
-  "categories": ["online_services"],
-  "fields": {
-    "userID": {
-      "type": "text",
-      "description": "@my-user:matrix.org"
+    "name": "Matrix Medias",
+    "type": "konnector",
+    "language": "node",
+    "icon": "icon.png",
+    "slug": "matrix",
+    "source": "git@github.com:Peltoche/matrix-medias.git",
+    "editor": "Peltoche",
+    "vendor_link": "https://matrix.org/",
+    "frequency": "daily",
+    "categories": ["online_services"],
+    "fields": {
+      "userID": {
+        "type": "text",
+        "isRequired": true
+      },
+      "roomID": {
+        "type": "text",
+        "identifier": true,
+        "isRequired": true
+      },
+      "instanceURL": {
+        "type": "text",
+        "default": "https://matrix.org",
+        "isRequired": false
+      },
+      "accessToken": {
+        "type": "password",
+        "isRequired": true
+      },
+      "saveVideos": {
+        "type": "checkbox",
+        "default": true,
+        "advanced": true
+      },
+      "savePictures": {
+        "type": "checkbox",
+        "default": true,
+        "advanced": true
+      },
+      "saveOther": {
+        "type": "checkbox",
+        "default": true,
+        "advanced": true
+      }
     },
-    "roomID": {
-      "type": "text"
+    "folders": [{"defaultDir": "$photos/$konnector/$account"}],
+    "data_types": ["videostream", "document"],
+    "screenshots": [],
+    "permissions": {
+      "files": {
+        "type": "io.cozy.files"
+      },
+      "accounts": {
+        "type": "io.cozy.accounts"
+      }
     },
-    "instanceURL": {
-      "type": "text",
-      "default": "https://matrix.org",
-      "isRequired": false
+    "developer": {
+      "name": "Peltoche",
+      "url": "https://github.com/Peltoche"
     },
-    "accessToken": {
-      "type": "password"
-    },
-    "saveVideos": {
-      "type": "checkbox",
-      "default": true,
-      "advanced": true
-    },
-    "savePictures": {
-      "type": "checkbox",
-      "default": true,
-      "advanced": true
-    },
-    "saveOther": {
-      "type": "checkbox",
-      "default": true,
-      "advanced": true
-    }
-  },
-  "folders": [{"defaultDir": "$photos/$konnector/$account"}],
-  "data_types": ["videostream"],
-  "screenshots": [],
-  "permissions": {
-    "files": {
-      "type": "io.cozy.files"
-    },
-    "accounts": {
-      "type": "io.cozy.accounts"
-    }
-  },
-  "developer": {
-    "name": "Peltoche",
-    "url": "https://github.com/Peltoche"
-  },
-  "langs": ["fr", "en"],
-  "locales": {
-    "fr": {
-      "short_description": "Récupère les medias de Matrix",
-      "long_description": "Récupère medias d'une room Matrix",
-      "permissions": {
-        "files": {
-          "description": "Utilisé pour sauvegarder les medias"
+    "langs": ["fr", "en"],
+    "locales": {
+      "fr": {
+        "short_description": "Récupère les medias de Matrix",
+        "long_description": "Récupère medias d'une room Matrix",
+        "fields": {
+          "userID": {
+            "label": "Identifiant",
+            "description": "Exemple: \"@clochix:matrix.org\""
+          },
+          "roomID": {
+            "label": "Room",
+            "description": "Un identifiant de room (\"!wbtZVAjTSFQzROqLrx:matrix.org\") ou une address (\"#cozycloud:matrix.org\")."
+          },
+          "accessToken": {
+            "label": "Access Token",
+            "description": "Ce token est disponible dans le configurations avancee de la room."
+          },
+          "saveVideos": {
+            "label": "Sauvegarder les videos"
+          },
+          "savePictures": {
+            "label": "Sauvegarder les images"
+          },
+          "saveOther": {
+            "label": "Sauvegarder les autres documents"
+          }
         },
-        "accounts": {
-          "description": "Utilisé pour obtenir les données du compte"
+        "permissions": {
+          "files": {
+            "description": "Utilisé pour sauvegarder les medias"
+          },
+          "accounts": {
+            "description": "Utilisé pour obtenir les données du compte"
+          }
+        }
+      },
+      "en": {
+        "short_description": "Fetch medias from Matrix",
+        "long_description": "Fetch medias from a Matrix room",
+        "fields": {
+          "userID": {
+            "label": "Identifier",
+            "description": "Example: \"@clochix:matrix.org\""
+          },
+          "roomID": {
+            "label": "Room",
+            "description": "A room identity (\"!wbtZVAjTSFQzROqLrx:matrix.org\") or an adress (\"#cozycloud:matrix.org\")."
+          },
+          "accessToken": {
+            "label": "Access Token",
+            "description": "This token is available inside the room advanced settings."
+          },
+          "saveVideos": {
+            "label": "Save the videos"
+          },
+          "savePictures": {
+            "label": "Save the pictures"
+          },
+          "saveOther": {
+            "label": "Save the other documents"
+          }
+        },
+        "permissions": {
+          "files": {
+            "description": "Required to save the medias"
+          },
+          "accounts": {
+            "description": "Required to get the account's data"
+          }
         }
       }
     },
-    "en": {
-      "short_description": "Fetch medias from Matrix",
-      "long_description": "Fetch medias from a Matrix room",
-      "permissions": {
-        "files": {
-          "description": "Required to save the medias"
-        },
-        "accounts": {
-          "description": "Required to get the account's data"
-        }
-      }
-    }
-  },
-  "manifest_version": "2"
+    "manifest_version": "2"
 }
